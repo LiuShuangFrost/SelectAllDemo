@@ -128,7 +128,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.id_delete://删除
                 //将选中的删除
                 if (isSelectAll) {
+                    //清空数据集
                     content.clear();
+                    //数据集中没有数据时，隐藏底部的全选、删除 布局
+                    mEditable.setText("编辑");
+                    mLlEdite.setVisibility(View.GONE);
                 } else {
                     Log.e(TAG, "onClick: delete");
                     for (int i = 0; i < content.size(); i++) {

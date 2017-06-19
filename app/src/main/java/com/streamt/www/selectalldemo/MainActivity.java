@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -13,6 +14,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private final String TAG = this.getClass().getSimpleName();
     private RecyclerView recyclerView;
     private MyAdapter myAdapter;
     private TextView mSelectAll;
@@ -125,12 +127,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.id_delete://删除
                 //将选中的删除
-                for (int i = 0; i < content.size(); i++) {
-                    if (MyApp.flag[i]) {
-                        content.remove(i);
-                        myAdapter.notifyItemRemoved(i);
+                if (isSelectAll) {
+                    content.clear();
+                } else {
+                    Log.e(TAG, "onClick: delete");
+                    for (int i = 0; i < content.size(); i++) {
+                        if (MyApp.flag[i]) {
+                            content.remove(i);
+                            MyApp.flag[i] = Boolean.parseBoolean(null);
+                        }
                     }
                 }
+                myAdapter.notifyDataSetChanged();
                 break;
         }
     }

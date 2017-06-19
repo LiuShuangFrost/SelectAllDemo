@@ -1,5 +1,6 @@
 package com.streamt.www.selectalldemo;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     int deleteNum = 0;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,15 +55,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         myAdapter.setOnItemClickListener(new MyAdapter.OnItemClickListener() {
 
-
             @Override
             public void checkBoxClick(int position, boolean isChecked) {
+                /**
+                 * 用于记录被选中的CheckBox的个数
+                 */
+                int selectedNum = 0;
+                for (int i = 0; i < MyApp.flag.length; i++) {
+                    if (MyApp.flag[i]) {
+                        selectedNum++;
+                    }
+                }
+                if (selectedNum > 0) {
+                    String text = "删除" + "(" + selectedNum + ")";
+                    setDeleteStatus(text, Color.RED);
+                }
                 if (!isChecked) {
                     mSelectAll.setText("全选");
                     isSelectAll = false;
                 }
             }
         });
+    }
+
+    /**
+     * 设置底部 删除 的状态
+     *
+     * @param text  文字
+     * @param color 字体颜色
+     */
+    private void setDeleteStatus(String text, int color) {
+        mDelete.setText(text);
+        mDelete.setTextColor(color);
     }
 
     private void initData() {
@@ -85,8 +111,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -108,12 +132,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 isSelectAll = !isSelectAll;
                 if (isSelectAll) {//全选
                     setSelectAllStatus(true, "取消全选");
+                    setDeleteStatus("删除" + "(" + content.size() + ")", Color.RED);
                 } else {//取消全选
                     setSelectAllStatus(false, "全选");
                 }
                 myAdapter.notifyItemRangeChanged(0, myAdapter.getItemCount() - 1);//重绘recylerView
                 break;
             case R.id.id_delete://删除
+                setDeleteStatus("删除", Color.GRAY);
                 if (isSelectAll) {//全选
                     //清空数据集
                     content.clear();

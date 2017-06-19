@@ -18,9 +18,12 @@ import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter {
 
-    List<String> content;
+    private List<String> content;
     private OnItemClickListener mOnItemClickListener;
 
+    /**
+     * 是否显示checkBox
+     */
     private boolean isShow = false;
 
     public MyAdapter(List<String> content) {
@@ -34,24 +37,14 @@ public class MyAdapter extends RecyclerView.Adapter {
     public void setShow(boolean show) {
         isShow = show;
     }
-    //        private boolean[] flag = new boolean[100];//此处添加一个boolean类型的数组
-
-
-    public interface OnItemClickListener {
-
-        void onItemClick(View view, int position);
-
-        void onItemLongClick(View view, int position);
-
-        void checkBoxClick(int position, boolean isChecked);
-
-
-    }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-
         this.mOnItemClickListener = onItemClickListener;
+    }
 
+
+    interface OnItemClickListener {
+        void checkBoxClick(int position, boolean isChecked);
     }
 
     @Override
@@ -68,31 +61,8 @@ public class MyAdapter extends RecyclerView.Adapter {
         myViewHolder.checkBox.setOnCheckedChangeListener(null);//先设置一次CheckBox的选中监听器，传入参数null
         myViewHolder.checkBox.setChecked(MyApp.flag[position]);//用数组中的值设置CheckBox的选中状态
 
-        //再设置一次CheckBox的选中监听器，当CheckBox的选中状态发生改变时，把改变后的状态储存在数组中
-//        myViewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-//                MyApp.flag[position] = b;
-//            }
-//        });
-
         if (mOnItemClickListener != null) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int pos = holder.getLayoutPosition();
-                    mOnItemClickListener.onItemClick(holder.itemView, pos);
-                }
-            });
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    int pos = holder.getLayoutPosition();
-                    mOnItemClickListener.onItemLongClick(holder.itemView, pos);
-//                    holder.cb_select.setVisibility(View.VISIBLE);
-                    return true;
-                }
-            });
+            //再设置一次CheckBox的选中监听器，当CheckBox的选中状态发生改变时，把改变后的状态储存在数组中
             ((MyViewHolder) holder).checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

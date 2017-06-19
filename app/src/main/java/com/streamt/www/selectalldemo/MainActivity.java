@@ -135,9 +135,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mLlEdite.setVisibility(View.GONE);
                 } else {
                     Log.e(TAG, "onClick: delete");
-                    for (int i = 0; i < content.size(); i++) {
+                    int count = myAdapter.getItemCount();
+                    for (int i = 0; i < count; i++) {
+                        // 因为List的特性,删除了2个item,则3变成2,所以这里要进行这样的换算,才能拿到删除后真正的position
+                        int position = i - ( count- myAdapter.getItemCount());
                         if (MyApp.flag[i]) {
-                            content.remove(i);
+                            content.remove(position);
                             MyApp.flag[i] = Boolean.parseBoolean(null);
                         }
                     }

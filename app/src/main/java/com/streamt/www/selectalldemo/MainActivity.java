@@ -24,7 +24,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public static List<String> content;
 
-//    private boolean[] flag = new boolean[100];//此处添加一个boolean类型的数组
+    /**
+     * 记录被删除的条目个数，用于控制底部 全选、删除 布局的隐藏
+     */
+    int deleteNum = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (!isChecked) {
                     mSelectAll.setText("全选");
                     isSelectAll = false;
+//                    MyApp.flag[position] = false;
+
                 }
             }
         });
@@ -84,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //标识 全选/取消全选 的状态
     boolean isSelectAll = false;
+
 
     @Override
     public void onClick(View v) {
@@ -130,22 +136,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (isSelectAll) {
                     //清空数据集
                     content.clear();
-                    //数据集中没有数据时，隐藏底部的全选、删除 布局
-                    mEditable.setText("编辑");
-                    mLlEdite.setVisibility(View.GONE);
+                    //数据集中没有数据时
+                    deleteNum = MyApp.flag.length;
                 } else {
                     Log.e(TAG, "onClick: delete");
                     int count = myAdapter.getItemCount();
                     for (int i = 0; i < count; i++) {
                         // 因为List的特性,删除了2个item,则3变成2,所以这里要进行这样的换算,才能拿到删除后真正的position
-                        int position = i - ( count- myAdapter.getItemCount());
+                        int position = i - (count - myAdapter.getItemCount());
+
                         if (MyApp.flag[i]) {
                             content.remove(position);
-                            MyApp.flag[i] = Boolean.parseBoolean(null);
+                            MyApp.flag[i] = false;
+                            deleteNum++;
                         }
                     }
+                    myAdapter.notifyDataSetChanged();
                 }
-                myAdapter.notifyDataSetChanged();
+                Log.e(TAG, "onClick: deldeteNum:" + deleteNum);
+                if (deleteNum == MyApp.flag.length) {
+                    mEditable.setText("编辑");
+                    mLlEdite.setVisibility(View.GONE);
+                }
                 break;
         }
     }

@@ -14,6 +14,8 @@ import java.util.Map;
 public class MyApp extends Application {
     /**
      * 用于控制RecyclerView中的heckBox的选中状态
+     * true:选中
+     * false:未选中
      */
     public static boolean[] flag=new boolean[MainActivity.content.size()];
     /**
